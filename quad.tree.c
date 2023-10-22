@@ -1,8 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 
 typedef struct quad_tree q_t;
-
+typedef struct point pt;
 struct point{
     float x;
     float y;
@@ -96,6 +97,31 @@ void display(q_t * root){
     display(root->s_w);
 }
 
+bool in_range(pt p1, pt p2, pt p3, pt p4, float key_x, float key_y){
+    if(p1.x <= key_x && p1.y >= key_y && p2.x >= key_x && p2.y >= key_y && p3.x >= key_x && p3.y <= key_y && p4.x <= key_x && p4.y <= key_y){
+        return true;
+    }
+
+    else return false;
+}
+
+void display_range(struct point p1, struct point p2, struct point p3, struct point p4, q_t * root){
+    if(root == NULL){
+        return;
+    }
+
+    if(in_range(p1, p2, p3, p4, root->val.x, root->val.y)){
+        printf("(%f, %f), ", root->val.x, root->val.y);
+    }
+
+    
+
+    display_range(p1, p2, p3, p4,root->n_w);
+    display_range(p1, p2, p3, p4, root->s_e);
+    display_range(p1, p2, p3, p4, root->n_e);
+    display_range(p1, p2, p3, p4, root->s_w);
+}
+
 int main(){
     q_t * root = NULL;
 
@@ -104,7 +130,7 @@ int main(){
 
         int quit = 0;
 
-        printf("Please enter the operation \n 1. Insert \n 2. Search \n 3. Display \n 4. Quit ");
+        printf("Please enter the operation \n 1. Insert \n 2. Search \n 3. Display \n 4. To display points in a region\n 5. Quit ");
 
         scanf("%d", &choice);
 
@@ -137,6 +163,35 @@ int main(){
             }
 
             case 4 : {
+                struct point p1, p2, p3, p4;
+                printf("Please enter the points (rectangle) in clockwise order \n");
+                printf("Enter the top-left most point \n ");
+                printf("x_coordinate : ");
+                scanf("%f", &p1.x);
+                printf("y_coordinate : ");
+                scanf("%f", &p1.y);
+                printf("Enter the top-right most point \n");
+                printf("x_coordinate : ");
+                scanf("%f", &p2.x);
+                printf("y_coordinate : ");
+                scanf("%f", &p2.y);
+                printf("Enter the bottom-right most point \n");
+                printf("x_coordinate : ");
+                scanf("%f", &p3.x);
+                printf("y_coordinate : ");
+                scanf("%f", &p3.y);
+                printf("Enter the botoom-left most point \n");
+                printf("x_coordinate : ");
+                scanf("%f", &p4.x);
+                printf("y_coordinate : ");
+                scanf("%f", &p4.y);
+
+                display_range(p1, p2, p3, p4, root);
+                printf("\n");
+                break;
+            }
+
+            case 5 : {
                 quit = 1;
             }
         }
